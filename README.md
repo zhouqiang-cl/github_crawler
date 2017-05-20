@@ -7,6 +7,7 @@
 <br/>&emsp;&emsp;2.repo_task.py 获取上一个程序抓取的有名的用户，抓取他们 star 和 自己创建的 repo(repo 通过过滤程序filter.py 过滤了，可自定义 filter)
 
 我的 filter 是获取 star 数超过 500，并且语言是 Python, C, Go, Javascript 的
+repos 的 api 支持三个参数 count,lang,sort. 顾名思义,count 是最终显示多少个, lang 是显示哪个语言的, 如果不加sort,那随机取 repo
 
 demo:
     <br/>&emsp;&emsp;[zhouqiang.site/api/v1/users](http://zhouqiang.site/api/v1/users)
