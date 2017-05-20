@@ -3,13 +3,15 @@
 import json
 import time
 import Queue
+from collections import Counter
+
 import tornado.gen
 import tornado.web
 import tornado.httpclient
 from tornado.ioloop import IOLoop, PeriodicCallback
+
 from logger import gen_log
 from settings import *
-from collections import Counter
 
 user_count = Counter()
 ret_code = Counter()
@@ -18,13 +20,16 @@ user_new_set = set(["sardaukar"])
 user_done_set = set()
 task_queue = Queue.Queue()
 
+
 def constract_fetch_following_url(uid):
     url = URL_PREFIX + 'users/' + uid \
         + '/following?access_token=' + ACCESS_TOKEN
     return url
 
+
 def get_users(user_info):
-    return [ info["login"] for info in user_info ]
+    return [info["login"] for info in user_info]
+
 
 class Tasks(PeriodicCallback):
     """docstring for ClassName"""
@@ -43,7 +48,7 @@ class Tasks(PeriodicCallback):
         except Queue.Empty:
             for uid in user_new_set - user_done_set:
                 url = constract_fetch_following_url(uid)
-                task_queue.put({"url": url,"retry": 3})
+                task_queue.put({"url": url, "retry": 3})
                 user_done_set.update(user_new_set)
                 user_new_set.clear()
         finally:
@@ -79,15 +84,20 @@ class Tasks(PeriodicCallback):
                 task_queue.put(url)
             gen_log.info(str(e) + " " + url["url"])
 
+
 class UserHandler(tornado.web.RequestHandler):
+
     def get(self):
-        count = int(self.get_argument("count",100))
+        count = int(self.get_argument("count", 100))
         users = user_count.most_common(count)
         self.finish(json.dumps(users))
 
+
 class StatusHandler(tornado.web.RequestHandler):
+
     def get(self):
         self.finish(json.dumps(ret_code))
+
 
 def make_app():
     return tornado.web.Application([

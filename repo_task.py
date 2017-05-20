@@ -3,28 +3,33 @@ import random
 import Queue
 import json
 import time
-import repos
+
 import tornado.gen
 import tornado.web
 import tornado.httpclient
 from tornado.ioloop import IOLoop, PeriodicCallback
+
+import repos
 from logger import gen_log
 from settings import *
 
 user_repos = set()
 task_queue = Queue.Queue()
 
+
 def get_famous_users(users_url):
     try:
-        return [ item[0] for item in json.loads(synchronous_fetch(users_url)) ]
+        return [item[0] for item in json.loads(synchronous_fetch(users_url))]
     except Exception as e:
         print str(e)
         return []
+
 
 def synchronous_fetch(url):
     http_client = tornado.httpclient.HTTPClient()
     response = http_client.fetch(url)
     return response.body
+
 
 class Tasks(PeriodicCallback):
     """docstring for ClassName"""
@@ -48,10 +53,10 @@ class Tasks(PeriodicCallback):
                 for uid in famous_users:
                     url = URL_PREFIX + 'users/' + uid \
                         + '/repos?access_token=' + ACCESS_TOKEN
-                    task_queue.put({"url":url})
+                    task_queue.put({"url": url})
                     url = URL_PREFIX + 'users/' + uid \
                         + '/starred?access_token=' + ACCESS_TOKEN
-                    task_queue.put({"url":url})
+                    task_queue.put({"url": url})
                 if famous_users:
                     self._last_scan = time.time()
         finally:
@@ -90,11 +95,12 @@ class ReposHandler(tornado.web.RequestHandler):
         count = int(self.get_argument("count", 100))
         sort = self.get_argument("sort", False)
         lang = self.get_argument("lang", None)
-        ur = [ r for r in user_repos if not lang or r.lang == lang ]
+        ur = [r for r in user_repos if not lang or r.lang == lang]
         if len(ur) < count:
-            rs = [ r.as_dict() for r in ur ]
+            rs = [r.as_dict() for r in ur]
         else:
-            rs = [ r.as_dict() for r in random.sample(ur, count) if not sort ] or [ r.as_dict() for r in sorted(ur, key=lambda count:count.stars, reverse=True)[0:count] ]
+            rs = [r.as_dict() for r in random.sample(ur, count) if not sort] or [r.as_dict(
+            ) for r in sorted(ur, key=lambda count:count.stars, reverse=True)[0:count]]
         self.finish(json.dumps(rs))
 
 

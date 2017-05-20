@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import time
 from filter import Filter
+
+
 class Repo(object):
 
-    def __init__(self, url=None, stars=0, forks=0, description="",lang=None, update_time=None):
+    def __init__(self, url=None, stars=0, forks=0, description="", lang=None, update_time=None):
         self.url = url
         self.stars = stars
         self.forks = forks
@@ -18,10 +20,12 @@ class Repo(object):
         else:
             return dict((k, d[k]) for k in d.iterkeys() if not k.startswith("_"))
 
+
 def get_repos(repos_info):
     f = Filter()
     # f.add_filter(lambda repo: repo["fork"] == False)
-    f.add_filter(lambda repo: repo["language"] in ["Python","JavaScript","C","Go"])
+    f.add_filter(lambda repo: repo["language"] in [
+                 "Python", "JavaScript", "C", "Go"])
     f.add_filter(lambda repo: repo["stargazers_count"] > 500)
     repos = f.filter_repos(repos_info)
     rs = set()

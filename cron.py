@@ -31,7 +31,7 @@ _attribute = [
 ]
 _alternate = {
     3: {'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
-        'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov':11, 'dec':12},
+        'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12},
     4: {'sun': 0, 'mon': 1, 'tue': 2, 'wed': 3, 'thu': 4, 'fri': 5, 'sat': 6},
 }
 _aliases = {
@@ -70,11 +70,14 @@ YEAR = timedelta(days=365)
 WARN_CHANGE = object()
 
 # find the next scheduled time
+
+
 def _end_of_month(dt):
     ndt = dt + DAY
     while dt.month == ndt.month:
         dt += DAY
     return ndt.replace(day=1) - DAY
+
 
 def _month_incr(dt, m):
     odt = dt
@@ -84,6 +87,7 @@ def _month_incr(dt, m):
     # get to the first of next month, let the backtracking handle it
     dt = dt.replace(day=1)
     return dt - odt
+
 
 def _year_incr(dt, m):
     # simple leapyear stuff works for 1970-2099 :)
@@ -101,14 +105,16 @@ _increments = [
     _month_incr,
     lambda *a: DAY,
     _year_incr,
-    lambda dt,x: dt.replace(minute=0),
-    lambda dt,x: dt.replace(hour=0),
-    lambda dt,x: dt.replace(day=1) if x > DAY else dt,
-    lambda dt,x: dt.replace(month=1) if x > DAY else dt,
-    lambda dt,x: dt,
+    lambda dt, x: dt.replace(minute=0),
+    lambda dt, x: dt.replace(hour=0),
+    lambda dt, x: dt.replace(day=1) if x > DAY else dt,
+    lambda dt, x: dt.replace(month=1) if x > DAY else dt,
+    lambda dt, x: dt,
 ]
 
 # find the previously scheduled time
+
+
 def _day_decr(dt, m):
     if m.day.input != 'l':
         return -DAY
@@ -118,11 +124,13 @@ def _day_decr(dt, m):
         dt -= DAY
     return dt - odt
 
+
 def _month_decr(dt, m):
     odt = dt
     # get to the last day of last month, let the backtracking handle it
     dt = dt.replace(day=1) - DAY
     return dt - odt
+
 
 def _year_decr(dt, m):
     # simple leapyear stuff works for 1970-2099 :)
@@ -132,6 +140,7 @@ def _year_decr(dt, m):
     if mod == 1 and (dt.month, dt.day) < (2, 29):
         return -(YEAR + DAY)
     return -YEAR
+
 
 def _day_decr_reset(dt, x):
     if x >= -DAY:
@@ -148,24 +157,27 @@ _decrements = [
     _month_decr,
     lambda *a: -DAY,
     _year_decr,
-    lambda dt,x: dt.replace(minute=59),
-    lambda dt,x: dt.replace(hour=23),
+    lambda dt, x: dt.replace(minute=59),
+    lambda dt, x: dt.replace(hour=23),
     _day_decr_reset,
-    lambda dt,x: dt.replace(month=12) if x < -DAY else dt,
-    lambda dt,x: dt,
+    lambda dt, x: dt.replace(month=12) if x < -DAY else dt,
+    lambda dt, x: dt,
 ]
 
 Matcher = namedtuple('Matcher', 'minute, hour, day, month, weekday, year')
 
+
 def _assert(condition, message, *args):
     if not condition:
-        raise ValueError(message%args)
+        raise ValueError(message % args)
+
 
 class _Matcher(object):
     __slots__ = 'allowed', 'end', 'any', 'input', 'which', 'split'
+
     def __init__(self, which, entry):
         _assert(0 <= which <= 5,
-            "improper number of cron entries specified")
+                "improper number of cron entries specified")
         self.input = entry.lower()
         self.split = self.input.split(',')
         self.which = which
@@ -179,8 +191,8 @@ class _Matcher(object):
                 self.allowed.update(al)
             self.end = en
         _assert(self.end is not None,
-            "improper item specification: %r", entry.lower()
-        )
+                "improper item specification: %r", entry.lower()
+                )
 
     def __call__(self, v, dt):
         for i, x in enumerate(self.split):
@@ -233,11 +245,11 @@ class _Matcher(object):
                 if it in _alternate[which]:
                     return _alternate[which][it]
             _assert(it.isdigit(),
-                "invalid range specifier: %r (%r)", it, entry)
+                    "invalid range specifier: %r (%r)", it, entry)
             it = int(it, 10)
             _assert(_start <= it <= _end_limit,
-                "item value %r out of range [%r, %r]",
-                it, _start, _end_limit)
+                    "item value %r out of range [%r, %r]",
+                    it, _start, _end_limit)
             return it
 
         # this handles individual items/ranges
@@ -257,13 +269,13 @@ class _Matcher(object):
                     return set([start])
 
             _assert(_start <= start <= _end_limit,
-                "range start value %r out of range [%r, %r]",
-                start, _start, _end_limit)
+                    "range start value %r out of range [%r, %r]",
+                    start, _start, _end_limit)
             _assert(_start <= end <= _end_limit,
-                "range end value %r out of range [%r, %r]",
-                end, _start, _end_limit)
+                    "range end value %r out of range [%r, %r]",
+                    end, _start, _end_limit)
             _assert(start <= end,
-                "range start value %r > end value %r", start, end)
+                    "range start value %r > end value %r", start, end)
             return set(range(start, end+1, increment or 1))
 
         _start, _end = _ranges[which]
@@ -272,23 +284,24 @@ class _Matcher(object):
         if entry in ('*', '?'):
             if entry == '?':
                 _assert(which in (2, 4),
-                    "cannot use '?' in the %r field", _attribute[which])
+                        "cannot use '?' in the %r field", _attribute[which])
             return None, _end
 
         # last day of the month
         if entry == 'l':
             _assert(which == 2,
-                "you can only specify a bare 'L' in the 'day' field")
+                    "you can only specify a bare 'L' in the 'day' field")
             return None, _end
 
         # for the last 'friday' of the month, for example
         elif entry.startswith('l'):
             _assert(which == 4,
-                "you can only specify a leading 'L' in the 'weekday' field")
+                    "you can only specify a leading 'L' in the 'weekday' field")
             es, _, ee = entry[1:].partition('-')
             _assert((entry[1:].isdigit() and 0 <= int(es) <= 7) or
-                    (_ and es.isdigit() and ee.isdigit() and 0 <= int(es) <= 7 and 0 <= int(ee) <= 7),
-                "last <day> specifier must include a day number or range in the 'weekday' field, you entered %r", entry)
+                    (_ and es.isdigit() and ee.isdigit() and 0 <=
+                     int(es) <= 7 and 0 <= int(ee) <= 7),
+                    "last <day> specifier must include a day number or range in the 'weekday' field, you entered %r", entry)
             return None, _end
 
         increment = None
@@ -297,8 +310,8 @@ class _Matcher(object):
             entry, increment = entry.split('/')
             increment = int(increment, 10)
             _assert(increment > 0,
-                "you can only use positive increment values, you provided %r",
-                increment)
+                    "you can only use positive increment values, you provided %r",
+                    increment)
 
         # allow Sunday to be specified as weekday 7
         if which == 4:
@@ -317,6 +330,7 @@ class _Matcher(object):
 
 class CronTab(object):
     __slots__ = 'matchers',
+
     def __init__(self, crontab):
         self.matchers = self._make_matchers(crontab)
 
@@ -326,12 +340,12 @@ class CronTab(object):
         '''
         crontab = _aliases.get(crontab, crontab)
         matchers = [_Matcher(which, entry)
-                        for which, entry in enumerate(crontab.split())]
+                    for which, entry in enumerate(crontab.split())]
 
         if len(matchers) == 5:
             matchers.append(_Matcher(5, '*'))
         _assert(len(matchers) == 6,
-            "improper number of cron entries specified")
+                "improper number of cron entries specified")
 
         return Matcher(*matchers)
 
@@ -357,7 +371,8 @@ class CronTab(object):
 
         now = now or (datetime.utcnow() if default_utc else datetime.now())
         if isinstance(now, _number_types):
-            now = datetime.utcfromtimestamp(now) if default_utc else datetime.fromtimestamp(now)
+            now = datetime.utcfromtimestamp(
+                now) if default_utc else datetime.fromtimestamp(now)
 
         # handle timezones if the datetime object has a timezone and get a
         # reasonable future/past start time
@@ -394,10 +409,10 @@ class CronTab(object):
         # verify the match
         match = [self._test_match(i, future) for i in xrange(6)]
         _assert(all(match),
-            "\nYou have discovered a bug with crontab, please notify the\n" \
-            "author with the following information:\n" \
-            "crontab: %r\n" \
-            "now: %r", ' '.join(m.input for m in self.matchers), now)
+                "\nYou have discovered a bug with crontab, please notify the\n"
+                "author with the following information:\n"
+                "crontab: %r\n"
+                "now: %r", ' '.join(m.input for m in self.matchers), now)
         delay = future - now
         if tz:
             delay += tz.utcoffset(now)
