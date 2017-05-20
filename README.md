@@ -9,7 +9,7 @@
 我的 filter 是获取 star 数超过 500，并且语言是 Python, C, Go, Javascript 的
 
 demo:
-    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/users](zhouqiang.site/api/v1/users)
-    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/users?count=10](zhouqiang.site/api/v1/users?count=10)
-    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/repos](zhouqiang.site/api/v1/repos)
-    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/repos?count=3](zhouqiang.site/api/v1/repos?count=3)
+    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/users](http://zhouqiang.site/api/v1/users)
+    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/users?count=10](http://zhouqiang.site/api/v1/users?count=10)
+    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/repos](http://zhouqiang.site/api/v1/repos)
+    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/repos?count=3](http://zhouqiang.site/api/v1/repos?count=3)
