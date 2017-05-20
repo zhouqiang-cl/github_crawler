@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 class Filter(object):
+
     def __init__(self):
         self.filters = set()
+
     def add_filter(self, f=None):
         if f:
             self.filters.add(f)
@@ -25,4 +27,3 @@ class Filter(object):
         for f in self.filters:
             tmp_repos = filter(f, tmp_repos)
         return tmp_repos
-

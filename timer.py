@@ -7,7 +7,6 @@ from tornado.ioloop import IOLoop, PeriodicCallback
 cron_set = set()
 
 
-
 class Cronjob(PeriodicCallback):
 
     def __init__(self, callback_time):
@@ -40,4 +39,3 @@ class Cronjob(PeriodicCallback):
                 cron._schedule_time = cron._cron_time.next(
                     now=cron._schedule_time, delta=False, default_utc=True)
                 cron_set.add(cron)
-
