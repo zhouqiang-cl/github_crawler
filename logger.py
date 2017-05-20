@@ -21,4 +21,3 @@ gen_handler.setFormatter(formatter)
 gen_log.addHandler(gen_handler)
 
 gen_log.setLevel(logging.INFO)
-

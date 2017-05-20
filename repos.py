@@ -3,7 +3,7 @@ import time
 from filter import Filter
 class Repo(object):
 
-    def __init__(self, url=None, stars=0, forks=0,lang=None, description="", update_time=None):
+    def __init__(self, url=None, stars=0, forks=0, description="",lang=None, update_time=None):
         self.url = url
         self.stars = stars
         self.forks = forks

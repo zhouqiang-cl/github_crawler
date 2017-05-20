@@ -43,7 +43,7 @@ class Tasks(PeriodicCallback):
                 url = task_queue.get_nowait()
                 self.process_url(url["url"])
             except Queue.Empty:
-                if time.time() - self._last_scan > 3:
+                if time.time() - self._last_scan > 600:
                     famous_users = get_famous_users(FAMOUS_USERS)
                 for uid in famous_users:
                     url = URL_PREFIX + 'users/' + uid \
@@ -52,6 +52,8 @@ class Tasks(PeriodicCallback):
                     url = URL_PREFIX + 'users/' + uid \
                         + '/starred?access_token=' + ACCESS_TOKEN
                     task_queue.put({"url":url})
+                if famous_users:
+                    self._last_scan = time.time()
         finally:
             self._serving = False
 
@@ -86,10 +88,13 @@ class ReposHandler(tornado.web.RequestHandler):
 
     def get(self):
         count = int(self.get_argument("count", 100))
-        if len(user_repos) < count:
-            rs = [ r.as_dict() for r in user_repos ]
+        sort = self.get_argument("sort", False)
+        lang = self.get_argument("lang", None)
+        ur = [ r for r in user_repos if not lang or r.lang == lang ]
+        if len(ur) < count:
+            rs = [ r.as_dict() for r in ur ]
         else:
-            rs = [ r.as_dict() for r in random.sample(user_repos, count) ]
+            rs = [ r.as_dict() for r in random.sample(ur, count) if not sort ] or [ r.as_dict() for r in sorted(ur, key=lambda count:count.stars, reverse=True)[0:count] ]
         self.finish(json.dumps(rs))
 
 
