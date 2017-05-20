@@ -13,3 +13,4 @@ demo:
     <br/>&emsp;&emsp;[zhouqiang.site/api/v1/users?count=10](http://zhouqiang.site/api/v1/users?count=10)
     <br/>&emsp;&emsp;[zhouqiang.site/api/v1/repos](http://zhouqiang.site/api/v1/repos)
     <br/>&emsp;&emsp;[zhouqiang.site/api/v1/repos?count=3](http://zhouqiang.site/api/v1/repos?count=3)
+    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/repos?count=3&lang=Python&sort=true](http://zhouqiang.site/api/v1/repos?count=3&lang=Python&sort=true)
