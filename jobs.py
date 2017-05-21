@@ -19,7 +19,7 @@ class Job(object):
 
 
 def fetch_random_repo():
-    url = "http://zhouqiang.site/api/v1/repos?count=1&lang=Python"
+    url = "http://zhouqiang.site/api/v2/repos?count=1&lang=Python"
     repo = json.loads(synchronous_fetch(url))[0]
     notify.notify_as_link(repo)
 
@@ -31,7 +31,7 @@ def synchronous_fetch(url):
 
 
 def main():
-    entry = CronTab('30 0 * * *')
+    entry = CronTab('3 * * * *')
     c = Job(entry, fetch_random_repo, "fetch repo")
     cron_set.add(c)
     Cronjob(1000).start()
