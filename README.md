@@ -12,11 +12,6 @@
 repos 的 api 支持三个参数 count,lang,sort. 顾名思义,count 是最终显示多少个, lang 是显示哪个语言的, 如果不加sort,那随机取 repo
 
 demo:
-    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/users](http://zhouqiang.site/api/v1/users)
-    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/users?count=10](http://zhouqiang.site/api/v1/users?count=10)
-    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/repos](http://zhouqiang.site/api/v1/repos)
-    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/repos?count=3](http://zhouqiang.site/api/v1/repos?count=3)
-    <br/>&emsp;&emsp;[zhouqiang.site/api/v1/repos?count=3&lang=Python&sort=true](http://zhouqiang.site/api/v1/repos?count=3&lang=Python&sort=true)
     <br/>&emsp;&emsp;[zhouqiang.site/api/v2/repos](http://zhouqiang.site/api/v2/repos)
     <br/>&emsp;&emsp;[zhouqiang.site/api/v2/repos?count=3](http://zhouqiang.site/api/v2/repos?count=3)
     <br/>&emsp;&emsp;[zhouqiang.site/api/v2/repos?count=3&lang=Python&sort=true](http://zhouqiang.site/api/v2/repos?count=3&lang=Python&sort=true)
